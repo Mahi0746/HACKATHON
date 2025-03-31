@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Smart E-Commerce Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        {
+            background-color: #121212;
+            color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #030917;
+            color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #1a1a40, #3b5998);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            padding: 15px 0;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .navbar-nav .nav-item {
+            margin: 0 10px;
+        }
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #ffcc00;
+            transform: scale(1.05);
+        }
+        .nav-item i {
+            margin-right: 8px;
+        }
+        #product-input {
+            width: 40%; /* Adjust width */
+            border-radius: 20px; /* Rounded corners */
+            display: block; /* Makes it behave like a block element */
+            margin: 0 auto; /* Centers it horizontally */
+            text-align: center; /* Ensures placeholder text is centered */
+        }
+        
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #ff4d4d;
+            box-shadow: 0px 0px 15px rgba(255, 77, 77, 0.8);
+        }
+        .content {
+            padding: 80px 20px;
+            text-align: center;
+        }
+        .glass-box {
+            background: rgba(50, 50, 50, 0.8);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, box-shadow 0.3s;
+            
+        }
+        .glass-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1);
+        }
+        .form-control {
+            border-radius: 25px;
+            padding: 12px;
+            font-size: 16px;
+        }
+        .btn-glow {
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            transition: 0.3s;
+            padding: 12px 24px;
+            border-radius: 25px;
+        }
+        .btn-glow:hover {
+            box-shadow: 0px 0px 15px rgba(106, 13, 173, 0.8);
+        }
+        .suggestions {
+            margin-top: 15px;
+        }
+        
+        .suggestion-btn {
+            background: #f1f1f1;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        
+        .suggestion-btn:hover {
+            background: #e0e0e0;
+        }
+        #chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #6a0dad;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0px 0px 15px rgba(106, 13, 173, 0.8);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        #chatbot:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 0px 20px rgba(106, 13, 173, 1);
+        }
+        .modal-content {
+            background: #222;
+            color: #fff;
+            border-radius: 10px;
+        }
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #333;
+            border-radius: 8px;
+        }
+        .user-msg, .bot-msg {
+            margin: 5px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            display: inline-block;
+            max-width: 75%;
+            clear: both;
+            transition: transform 0.3s;
+        }
+        .user-msg {
+            background: #6a0dad;
+            color: white;
+            align-self: flex-end;
+            text-align: right;
+        }
+        .bot-msg {
+            background: #444;
+            color: white;
+            align-self: flex-start;
+            text-align: left;
+        }
+        .user-msg:hover, .bot-msg:hover {
+            transform: scale(1.05);
+        }
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px; /* Ensures even spacing between cards */
+            padding: 20px;
+        }
+    
+        .product-card {
+            width: 280px; /* Balanced width */
+            height: 390px; /* Proper height */
+            background: linear-gradient(135deg, #0a0f2c, #131a3a); /* Darker deep blue gradient */
+            border-radius: 30px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 20px rgba(100, 100, 255, 0.4);
+        }
+    
+        .product-img {
+            width: 100%;
+            height: 180px; /* Ensures image is clearly visible */
+            object-fit: cover; /* Prevents distortion */
+            border-radius: 10px;
+            background-color: #ccc; /* Placeholder */
+        }
+    
+        .product-title {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 10px;
+            white-space: break-word;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    
+        .product-price {
+            color: #ff4d4d;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    
+        .text-decoration-none {
+            text-decoration: none;
+        }
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <!-- Spinner Overlay -->
+    <div id="loading">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+   <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="bi bi-speedometer2"></i> Smart Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-house-door"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/trending-deals"><i class="bi bi-fire"></i> Trending Deals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/compare-products"><i class="bi bi-bar-chart"></i> Compare Products</a></li>
+                    <li class="nav-item"><a class="nav-link logout-btn" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Content -->
+    <div class="content">
+        <h2>🔍 Smart Product Finder</h2>
+        <p>Enter a product name and let AI recommend the best options for you.</p>
+        
+        <!-- Search Input -->
+        <input type="text" id="product-input" class="mahi form-control mb-3" placeholder="E.g., Laptop, Mobile, TV">
+        
+        <!-- Search Button -->
+        <button class="btn btn-glow" onclick="searchProduct()">Find Best Deals</button>
+        
+        <!-- Suggestion Buttons -->
+        <div class="suggestions">
+            <button class="suggestion-btn" onclick="setProduct('Laptop')">
+                💻 Laptop
+            </button>
+            <button class="suggestion-btn" onclick="setProduct('Watches')">
+                ⌚ Watches
+            </button>
+            <button class="suggestion-btn" onclick="setProduct('iPhone')">
+                📱 iPhone
+            </button>
+            <button class="suggestion-btn" onclick="setProduct('Headphone')">
+                🎧 Headphones
+            </button>
+        </div>
+    </div>
+    
+
+    <!-- Chatbot Button -->
+    <div id="chatbot" onclick="openChatModal()">💬</div>
+
+    <!-- Chatbot Modal -->
+    <div class="modal modal-lg fade" id="chatbotModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">AI Chatbot</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="chat-box" id="chat-box"></div>
+                </div>
+                <div class="modal-footer">
+                    <input type="text" id="user-input" class="form-control" placeholder="Ask me anything...">
+                    <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="productsContainer"></div>
+    <script>
+        window.addEventListener("load", function() {
+                document.getElementById("loading").style.display = "none";
+        });
+        function setProduct(product) {
+            document.getElementById('product-input').value = product; // Auto-fill input field
+            searchProduct(); // Trigger search
+        }
+        
+        function searchProduct() {
+            let product = document.getElementById('product-input').value.trim();
+            if (product === "") {
+                alert("Please enter a product name!");
+                return;
+            }
+            document.getElementById("loading").style.display = "flex";
+            fetch('/dashboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ search_data: product }) 
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                showProducts(data.products);  // Call showProducts immediately
+            })
+            .catch(error => console.error("Error:", error));
+        }
+        
+        
+        
+        
+        
+        function showProducts(products) {
+        
+            let product = document.getElementById('product-input').value.trim(); // Get search term
+            document.getElementById("loading").style.display = "none";
+            // Assuming `products` gets updated dynamically (e.g., from an API)            
+            let productsData = products.map(p => ({
+                name: p[2],  // Product Name
+                price: p[1]  // Product Price
+            }));
+        
+    
+        
+            // Display products dynamically
+            const productsContainer = document.getElementById('productsContainer');
+            productsContainer.innerHTML = "";
+        
+            if (products.length === 0) {
+                productsContainer.innerHTML = `
+                    <div class="container border border-1 border-dark rounded p-4">
+                        <p class="text-center m-0" style="font-size:24px;">No Products found.</p>
+                    </div>
+                `;
+            } else {
+                let rowContainer = document.createElement('div');
+                rowContainer.classList.add('row');
+        
+                products.forEach((product) => {
+                    const shoeItem = document.createElement('div');
+                    shoeItem.classList.add('col-6','col-md-4','col-lg-3');
+                    
+                    shoeItem.innerHTML = `
+                        <div class="container product-container">
+    <a href="${product[2]}" target="_blank" class="text-decoration-none">
+        <div class="product-card">
+            <img src="${product[3]}" class="product-img" alt="${product[3]}" id="product-img">
+            <p class="product-title">${product[0]}</p>
+            <p class="product-price"><i class="bi bi-currency-rupee"></i>${product[1]}</p>
+        </div>
+    </a>
+</div>
+
+                    `;
+                    rowContainer.appendChild(shoeItem);
+                });
+                productsContainer.appendChild(rowContainer);
+            }
+        }
+        
+        function openChatModal() {
+            $("#chatbotModal").modal("show");
+        }
+
+        function sendMessage() {
+            let userInput = $("#user-input").val();
+            if (!userInput) return;
+        
+            // Append user message to the right
+            $("#chat-box").append(`<div class='user-msg'>You: ${userInput}</div>`);
+            $("#user-input").val("");
+            $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+        
+            // Send request to backend
+            $.ajax({
+                url: "/chatbot",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ message: userInput }),
+                success: function(response) {
+                    // Append bot response to the left
+                    $("#chat-box").append(`<div class='bot-msg'>AI: ${response.reply}</div>`);
+                    $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+                },
+                error: function() {
+                    $("#chat-box").append(`<div class='bot-msg'>AI: Sorry, something went wrong.</div>`);
+                }
+            });
+        }
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
